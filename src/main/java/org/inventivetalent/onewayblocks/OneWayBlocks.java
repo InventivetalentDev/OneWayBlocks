@@ -99,7 +99,7 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 
 	@EventHandler
 	public void on(PlayerMoveEvent event) {
-		if (event.getFrom().distanceSquared(event.getTo()) == 0) { return; }
+		if (event.getFrom().distanceSquared(event.getTo()) < 0.004) { return; }
 
 		Vector3DDouble playerVector = new Vector3DDouble(event.getPlayer().getEyeLocation());
 
