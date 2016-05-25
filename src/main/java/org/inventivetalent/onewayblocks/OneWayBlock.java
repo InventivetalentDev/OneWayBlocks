@@ -42,7 +42,6 @@ import org.inventivetalent.vectors.d3.Vector3DDouble;
 @Data
 @EqualsAndHashCode(doNotUseGetters = true,
 				   exclude = {
-						   "inverted",
 						   "material",
 						   "data",
 						   "entity" })
