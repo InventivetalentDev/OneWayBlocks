@@ -149,12 +149,22 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			boolean inverted = "inverted".equals(getLoreIndex(event.getItem(), 0));
 
-			String[] materialSplit = getLoreIndex(event.getItem(), 1).split(":");
-			if (materialSplit.length != 2) {
-				return;
+			Material material = null;
+			byte data = 0;
+			try {
+				String materialString = getLoreIndex(event.getItem(), 1);
+				if (materialString.contains(":")) {
+					String[] materialSplit = materialString.split(":");
+					if (materialSplit.length != 2) {
+						return;
+					}
+					material = Material.valueOf(materialSplit[0]);
+					data = Byte.parseByte(materialSplit[1]);
+				} else {
+					material = Material.valueOf(materialString);
+				}
+			} catch (Exception ignored) {
 			}
-			Material material = Material.valueOf(materialSplit[0]);
-			byte data = Byte.parseByte(materialSplit[1]);
 
 			if (material == null || material == Material.AIR) {
 				event.getPlayer().sendMessage("§cPlease left-click to select another material first");
