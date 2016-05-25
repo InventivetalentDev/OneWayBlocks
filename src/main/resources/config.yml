@@ -1,0 +1,11 @@
+# Radius around players to replace blocks
+radius:
+  x: 32
+  y: 8
+  z: 32
+
+# Wand Item
+item:
+  type: "NAME_TAG"
+  meta:
+    display: "§eOneWayBlock§6Wand"

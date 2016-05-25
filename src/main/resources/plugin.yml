@@ -1,0 +1,4 @@
+name: OneWayBlocks
+main: org.inventivetalent.onewayblocks.OneWayBlocks
+author: inventivetalent
+version: ${project.version}
