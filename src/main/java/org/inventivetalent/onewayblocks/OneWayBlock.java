@@ -59,24 +59,24 @@ public class OneWayBlock {
 		Vector3DDouble diff = check.subtract(vector);
 
 		if (direction.getModX() == 1) {
-			return diff.getX() > 0;
+			return diff.getX() >= 0;
 		}
 		if (direction.getModX() == -1) {
-			return diff.getX() < 0;
+			return diff.getX() <= 0;
 		}
 
 		if (direction.getModY() == 1) {
-			return diff.getY() > 0;
+			return diff.getY() >= 0;
 		}
 		if (direction.getModY() == -1) {
-			return diff.getY() < 0;
+			return diff.getY() <= 0;
 		}
 
 		if (direction.getModZ() == 1) {
-			return diff.getZ() > 0;
+			return diff.getZ() >= 0;
 		}
 		if (direction.getModZ() == -1) {
-			return diff.getZ() < 0;
+			return diff.getZ() <= 0;
 		}
 
 		return false;
