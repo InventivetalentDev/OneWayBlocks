@@ -8,4 +8,4 @@ radius:
 item:
   type: "NAME_TAG"
   meta:
-    display: "§eOneWayBlock§6Wand"
+    display: "&eOneWayBlock&6Wand"
