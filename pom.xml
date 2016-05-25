@@ -34,7 +34,7 @@
 
     <groupId>org.inventivetalent</groupId>
     <artifactId>onewayblocks</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>OneWayBlocks</name>
 
     <build>
