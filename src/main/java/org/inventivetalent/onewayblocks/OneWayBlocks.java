@@ -136,10 +136,14 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void on(BlockBreakEvent event) {
 		if (event.isCancelled()) { return; }
-		for (Entity entity : event.getPlayer().getNearbyEntities(16, 16, 16)) {
+		killBlock(event.getPlayer(), event.getBlock());
+	}
+
+	void killBlock(Player player, Block block) {
+		for (Entity entity : player.getNearbyEntities(16, 16, 16)) {
 			if (entity.getType() == EntityType.ARMOR_STAND) {
-				if (entity.getCustomName().startsWith("OneWayBlock-")) {
-					if (entity.getLocation().getBlock().equals(event.getBlock())) {
+				if (entity.getCustomName() != null && entity.getCustomName().startsWith("OneWayBlock-")) {
+					if (entity.getLocation().getBlock().equals(block)) {
 						entity.remove();
 					}
 				}
@@ -182,15 +186,7 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 			event.setCancelled(true);
 
 			// Kill old ArmorStands
-			for (Entity entity : event.getPlayer().getNearbyEntities(16, 16, 16)) {
-				if (entity.getType() == EntityType.ARMOR_STAND) {
-					if (entity.getCustomName().startsWith("OneWayBlock-")) {
-						if (entity.getLocation().getBlock().equals(event.getClickedBlock())) {
-							entity.remove();
-						}
-					}
-				}
-			}
+			killBlock(event.getPlayer(), event.getClickedBlock());
 
 			BlockFace face = event.getBlockFace();
 			if (inverted) { face = face.getOppositeFace(); }
