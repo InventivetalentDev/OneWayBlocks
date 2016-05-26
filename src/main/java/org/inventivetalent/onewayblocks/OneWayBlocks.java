@@ -54,6 +54,7 @@ import org.inventivetalent.pluginannotations.command.OptionalArg;
 import org.inventivetalent.pluginannotations.command.Permission;
 import org.inventivetalent.pluginannotations.config.ConfigValue;
 import org.inventivetalent.vectors.d3.Vector3DDouble;
+import org.mcstats.MetricsLite;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -75,6 +76,14 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 		Bukkit.getPluginManager().registerEvents(this, this);
 
 		wandItem = new ItemBuilder(Material.NAME_TAG).fromConfig(getConfig().getConfigurationSection("item")).build();
+
+		try {
+			MetricsLite metrics = new MetricsLite(this);
+			if (metrics.start()) {
+				getLogger().info("Metrics started");
+			}
+		} catch (Exception e) {
+		}
 	}
 
 	@Command(name = "onewayblockwand",
