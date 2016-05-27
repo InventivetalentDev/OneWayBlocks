@@ -28,6 +28,7 @@
 
 package org.inventivetalent.onewayblocks;
 
+import lombok.Synchronized;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -69,8 +70,6 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 
 	ItemStack wandItem;
 
-	public boolean packetListenerEnabled = false;
-
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();
@@ -78,12 +77,6 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 		Bukkit.getPluginManager().registerEvents(this, this);
 
 		wandItem = new ItemBuilder(Material.NAME_TAG).fromConfig(getConfig().getConfigurationSection("item")).build();
-
-		if (Bukkit.getPluginManager().isPluginEnabled("PacketListenerApi")) {
-			getLogger().info("Found PacketListenerAPI");
-			new PacketListener(this);
-			packetListenerEnabled = true;
-		}
 
 		try {
 			MetricsLite metrics = new MetricsLite(this);
@@ -119,29 +112,19 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 		if (event.getFrom().distanceSquared(event.getTo()) < 0.004) { return; }
 
 		Vector3DDouble playerVector = new Vector3DDouble(event.getPlayer().getEyeLocation());
-
 		for (OneWayBlock block : getNearbyOneWayBlocks(event.getPlayer())) {
-			Block bukkitBlock = block.getBlock(event.getPlayer().getWorld());
+			refreshBlock(event.getPlayer(), playerVector, block);
+		}
+	}
 
-			//			// Blame Bukkit for not properly hiding invisible ArmorStands...
-			//			ArmorStand tempMarker = bukkitBlock.getWorld().spawn(new Location(event.getPlayer().getWorld(), 0, 0, 0), ArmorStand.class);
-			//			tempMarker.setMarker(true);
-			//			tempMarker.setVisible(false);
-			//			tempMarker.setGravity(false);
-			//			tempMarker.setSmall(true);
-			//			tempMarker.teleport(bukkitBlock.getRelative(block.getDirection()).getLocation().add(.5, -.5, .5));
+	void refreshBlock(Player player, Vector3DDouble playerVector, OneWayBlock block) {
+		Block bukkitBlock = block.getBlock(player.getWorld());
 
-			Location location = bukkitBlock.getLocation();
-			if (packetListenerEnabled) {
-				location.setY(-location.getY());// Manipulate Y so we can identify the packet
-			}
-			if (!block.faceVisibleFrom(playerVector) && block.getDirectionMarker().hasLineOfSight(event.getPlayer())) {
-				event.getPlayer().sendBlockChange(location, block.getMaterial(), block.getData());
-			} else {
-				event.getPlayer().sendBlockChange(location, bukkitBlock.getType(), bukkitBlock.getData());
-			}
-
-			//			tempMarker.remove();
+		Location location = bukkitBlock.getLocation();
+		if (!block.faceVisibleFrom(playerVector) && block.getDirectionMarker().hasLineOfSight(player)) {
+			player.sendBlockChange(location, block.getMaterial(), block.getData());
+		} else {
+			player.sendBlockChange(location, bukkitBlock.getType(), bukkitBlock.getData());
 		}
 	}
 
@@ -151,6 +134,7 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 		killBlock(event.getPlayer(), event.getBlock());
 	}
 
+	@Synchronized
 	void killBlock(Player player, Block block) {
 		for (Entity entity : player.getNearbyEntities(16, 16, 16)) {
 			if (entity.getType() == EntityType.ARMOR_STAND) {
@@ -169,6 +153,7 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 		}
 	}
 
+	@Synchronized
 	Set<ArmorStand> getArmorStandsInBlock(Block block) {
 		Set<ArmorStand> set = new HashSet<>();
 		for (ArmorStand armorStand : block.getWorld().getEntitiesByClass(ArmorStand.class)) {
@@ -181,6 +166,7 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 		return set;
 	}
 
+	@Synchronized
 	ArmorStand getArmorStandInBlock(Block block) {
 		for (ArmorStand armorStand : block.getWorld().getEntitiesByClass(ArmorStand.class)) {
 			if (armorStand.getCustomName() != null && (armorStand.getCustomName().startsWith("OneWayBlock-") || armorStand.getCustomName().equals("OneWayBlock:Direction"))) {
@@ -192,8 +178,24 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 		return null;
 	}
 
+	@EventHandler(priority = EventPriority.MONITOR,
+				  ignoreCancelled = true)
+	public void onRefreshInteract(final PlayerInteractEvent event) {
+		if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_BLOCK) {
+			Bukkit.getScheduler().runTask(this, new Runnable() {
+				@Override
+				public void run() {
+					Vector3DDouble playerVector = new Vector3DDouble(event.getPlayer().getEyeLocation());
+					for (OneWayBlock block : getNearbyOneWayBlocks(event.getPlayer())) {
+						refreshBlock(event.getPlayer(), playerVector, block);
+					}
+				}
+			});
+		}
+	}
+
 	@EventHandler
-	public void on(PlayerInteractEvent event) {
+	public void onWandInteract(PlayerInteractEvent event) {
 		if (event.isCancelled()) { return; }
 		if (!event.getPlayer().hasPermission("onewayblocks.create")) { return; }
 		if (event.getItem() == null) { return; }
