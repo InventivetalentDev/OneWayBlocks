@@ -148,7 +148,9 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 						entity.remove();
 
 						ArmorStand directionMarker = getArmorStandInBlock(block.getRelative(oneWayBlock.getDirection()));
-						directionMarker.remove();
+						if (directionMarker != null) {
+							directionMarker.remove();
+						}
 					}
 				}
 			}
