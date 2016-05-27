@@ -67,6 +67,8 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 	@ConfigValue(path = "radius.y") double radiusY;
 	@ConfigValue(path = "radius.z") double radiusZ;
 
+	@ConfigValue(path = "allowInteract") boolean allowInteract = false;
+
 	ItemStack wandItem;
 
 	@Override
@@ -177,6 +179,7 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR,
 				  ignoreCancelled = true)
 	public void onRefreshInteract(final PlayerInteractEvent event) {
+		if (allowInteract) { return; }
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			Bukkit.getScheduler().runTask(this, new Runnable() {
 				@Override

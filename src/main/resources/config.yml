@@ -4,6 +4,9 @@ radius:
   y: 8
   z: 32
 
+# Whether to allow interaction with the blocks (causes the texture to reset when players click a block)
+allowInteract: false
+
 # Wand Item
 item:
   type: "NAME_TAG"
