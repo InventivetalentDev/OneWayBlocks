@@ -52,6 +52,7 @@ public class OneWayBlock {
 	private       Material       material;
 	private       byte           data;
 	private       ArmorStand     entity;
+	private       ArmorStand     directionMarker;
 
 	public boolean faceVisibleFrom(Vector3DDouble vector) {
 		Vector3DDouble check = location.add(direction.getModX() * .5, direction.getModY() * .5, direction.getModZ() * .5);

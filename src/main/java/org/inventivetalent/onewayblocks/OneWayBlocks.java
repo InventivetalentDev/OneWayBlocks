@@ -115,21 +115,21 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 		for (OneWayBlock block : getNearbyOneWayBlocks(event.getPlayer())) {
 			Block bukkitBlock = block.getBlock(event.getPlayer().getWorld());
 
-			// Blame Bukkit for not properly hiding invisible ArmorStands...
-			ArmorStand tempMarker = bukkitBlock.getWorld().spawn(new Location(event.getPlayer().getWorld(), 0, 0, 0), ArmorStand.class);
-			tempMarker.setMarker(true);
-			tempMarker.setVisible(false);
-			tempMarker.setGravity(false);
-			tempMarker.setSmall(true);
-			tempMarker.teleport(bukkitBlock.getRelative(block.getDirection()).getLocation().add(.5, -.5, .5));
+			//			// Blame Bukkit for not properly hiding invisible ArmorStands...
+			//			ArmorStand tempMarker = bukkitBlock.getWorld().spawn(new Location(event.getPlayer().getWorld(), 0, 0, 0), ArmorStand.class);
+			//			tempMarker.setMarker(true);
+			//			tempMarker.setVisible(false);
+			//			tempMarker.setGravity(false);
+			//			tempMarker.setSmall(true);
+			//			tempMarker.teleport(bukkitBlock.getRelative(block.getDirection()).getLocation().add(.5, -.5, .5));
 
-			if (!block.faceVisibleFrom(playerVector) && tempMarker.hasLineOfSight(event.getPlayer())) {
+			if (!block.faceVisibleFrom(playerVector) && block.getDirectionMarker().hasLineOfSight(event.getPlayer())) {
 				event.getPlayer().sendBlockChange(bukkitBlock.getLocation(), block.getMaterial(), block.getData());
 			} else {
 				event.getPlayer().sendBlockChange(bukkitBlock.getLocation(), bukkitBlock.getType(), bukkitBlock.getData());
 			}
 
-			tempMarker.remove();
+			//			tempMarker.remove();
 		}
 	}
 
@@ -144,11 +144,38 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 			if (entity.getType() == EntityType.ARMOR_STAND) {
 				if (entity.getCustomName() != null && entity.getCustomName().startsWith("OneWayBlock-")) {
 					if (entity.getLocation().getBlock().equals(block)) {
+						OneWayBlock oneWayBlock = OneWayBlock.of(entity);
 						entity.remove();
+
+						ArmorStand directionMarker = getArmorStandInBlock(block.getRelative(oneWayBlock.getDirection()));
+						directionMarker.remove();
 					}
 				}
 			}
 		}
+	}
+
+	Set<ArmorStand> getArmorStandsInBlock(Block block) {
+		Set<ArmorStand> set = new HashSet<>();
+		for (ArmorStand armorStand : block.getWorld().getEntitiesByClass(ArmorStand.class)) {
+			if (armorStand.getCustomName() != null && (armorStand.getCustomName().startsWith("OneWayBlock-") || armorStand.getCustomName().equals("OneWayBlock:Direction"))) {
+				if (armorStand.getLocation().getBlock().equals(block)) {
+					set.add(armorStand);
+				}
+			}
+		}
+		return set;
+	}
+
+	ArmorStand getArmorStandInBlock(Block block) {
+		for (ArmorStand armorStand : block.getWorld().getEntitiesByClass(ArmorStand.class)) {
+			if (armorStand.getCustomName() != null && (armorStand.getCustomName().startsWith("OneWayBlock-") || armorStand.getCustomName().equals("OneWayBlock:Direction"))) {
+				if (armorStand.getLocation().getBlock().equals(block)) {
+					return armorStand;
+				}
+			}
+		}
+		return null;
 	}
 
 	@EventHandler
@@ -199,6 +226,15 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 			blockMarker.setBasePlate(false);
 			blockMarker.setCustomName("OneWayBlock-" + face.name() + "-" + material + ":" + data + "-"/* + (inverted ? "inverted" : "")*/);
 
+			location = event.getClickedBlock().getRelative(face).getLocation().add(.5, .5, .5);
+			ArmorStand directionMarker = location.getWorld().spawn(location, ArmorStand.class);
+			directionMarker.setMarker(true);
+			directionMarker.setVisible(false);
+			directionMarker.setGravity(false);
+			directionMarker.setSmall(true);
+			directionMarker.setBasePlate(false);
+			directionMarker.setCustomName("OneWayBlock:Direction");
+
 			event.getPlayer().sendMessage("§aBlock converted");
 		} else if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			Block clicked = event.getClickedBlock();
@@ -234,6 +270,11 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 				if (entity.getCustomName() != null && entity.getCustomName().startsWith("OneWayBlock-")) {
 					OneWayBlock oneWayBlock = OneWayBlock.of(entity);
 					oneWayBlock.setEntity((ArmorStand) entity);
+
+					ArmorStand directionMarker = getArmorStandInBlock(oneWayBlock.getBlock(player.getWorld()).getRelative(oneWayBlock.getDirection()));
+					if (directionMarker == null) { continue; }
+					oneWayBlock.setDirectionMarker(directionMarker);
+
 					blocks.add(oneWayBlock);
 				}
 			}
