@@ -69,6 +69,8 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 
 	ItemStack wandItem;
 
+	public boolean packetListenerEnabled = false;
+
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();
@@ -76,6 +78,12 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 		Bukkit.getPluginManager().registerEvents(this, this);
 
 		wandItem = new ItemBuilder(Material.NAME_TAG).fromConfig(getConfig().getConfigurationSection("item")).build();
+
+		if (Bukkit.getPluginManager().isPluginEnabled("PacketListenerApi")) {
+			getLogger().info("Found PacketListenerAPI");
+			new PacketListener(this);
+			packetListenerEnabled = true;
+		}
 
 		try {
 			MetricsLite metrics = new MetricsLite(this);
@@ -123,10 +131,14 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 			//			tempMarker.setSmall(true);
 			//			tempMarker.teleport(bukkitBlock.getRelative(block.getDirection()).getLocation().add(.5, -.5, .5));
 
+			Location location = bukkitBlock.getLocation();
+			if (packetListenerEnabled) {
+				location.setY(-location.getY());// Manipulate Y so we can identify the packet
+			}
 			if (!block.faceVisibleFrom(playerVector) && block.getDirectionMarker().hasLineOfSight(event.getPlayer())) {
-				event.getPlayer().sendBlockChange(bukkitBlock.getLocation(), block.getMaterial(), block.getData());
+				event.getPlayer().sendBlockChange(location, block.getMaterial(), block.getData());
 			} else {
-				event.getPlayer().sendBlockChange(bukkitBlock.getLocation(), bukkitBlock.getType(), bukkitBlock.getData());
+				event.getPlayer().sendBlockChange(location, bukkitBlock.getType(), bukkitBlock.getData());
 			}
 
 			//			tempMarker.remove();
