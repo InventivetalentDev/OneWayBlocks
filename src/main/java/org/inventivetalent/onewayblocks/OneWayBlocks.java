@@ -28,7 +28,6 @@
 
 package org.inventivetalent.onewayblocks;
 
-import lombok.Synchronized;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -134,7 +133,6 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 		killBlock(event.getPlayer(), event.getBlock());
 	}
 
-	@Synchronized
 	void killBlock(Player player, Block block) {
 		for (Entity entity : player.getNearbyEntities(16, 16, 16)) {
 			if (entity.getType() == EntityType.ARMOR_STAND) {
@@ -153,7 +151,6 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 		}
 	}
 
-	@Synchronized
 	Set<ArmorStand> getArmorStandsInBlock(Block block) {
 		Set<ArmorStand> set = new HashSet<>();
 		for (ArmorStand armorStand : block.getWorld().getEntitiesByClass(ArmorStand.class)) {
@@ -166,7 +163,6 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 		return set;
 	}
 
-	@Synchronized
 	ArmorStand getArmorStandInBlock(Block block) {
 		for (ArmorStand armorStand : block.getWorld().getEntitiesByClass(ArmorStand.class)) {
 			if (armorStand.getCustomName() != null && (armorStand.getCustomName().startsWith("OneWayBlock-") || armorStand.getCustomName().equals("OneWayBlock:Direction"))) {
