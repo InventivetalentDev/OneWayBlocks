@@ -53,12 +53,12 @@ public class OneWayBlock {
 	private       byte           data;
 	private       ArmorStand     entity;
 	private       ArmorStand     directionMarker;
-	private boolean inverted;
+	private       boolean        inverted;
 
 	public boolean faceVisibleFrom(Vector3DDouble vector) {
-//		boolean result = faceVisibleFrom0(vector);
-//		if(inverted)return !result;
-//		return result;
+		//		boolean result = faceVisibleFrom0(vector);
+		//		if(inverted)return !result;
+		//		return result;
 		return faceVisibleFrom0(vector);
 	}
 

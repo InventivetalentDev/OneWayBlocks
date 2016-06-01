@@ -122,8 +122,8 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 		Block bukkitBlock = block.getBlock(player.getWorld());
 
 		Location location = bukkitBlock.getLocation();
-		boolean visible=!block.faceVisibleFrom(playerVector) && block.getDirectionMarker().hasLineOfSight(player);
-		if(block.isInverted())visible=!visible;
+		boolean visible = !block.faceVisibleFrom(playerVector) && block.getDirectionMarker().hasLineOfSight(player);
+		if (block.isInverted()) { visible = !visible; }
 		if (visible) {
 			player.sendBlockChange(location, block.getMaterial(), block.getData());
 		} else {
@@ -233,7 +233,7 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 			killBlock(event.getPlayer(), event.getClickedBlock());
 
 			BlockFace face = event.getBlockFace();
-//			if (inverted) { face = face.getOppositeFace(); }
+			//			if (inverted) { face = face.getOppositeFace(); }
 			Location location = event.getClickedBlock().getLocation().add(.5, .5, .5);
 			ArmorStand blockMarker = location.getWorld().spawn(location, ArmorStand.class);
 			blockMarker.setMarker(true);
