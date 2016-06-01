@@ -101,7 +101,7 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 			 max = 2,
 			 fallbackPrefix = "onewayblocks")
 	@Permission("onewayblocks.wand")
-	public void oneWayWand(Player sender, @OptionalArg(def = "AIR:0") String material, @OptionalArg(def = "not inverted") String inverted) {
+	public void oneWayWand(Player sender, @OptionalArg(def = "NULL") String material, @OptionalArg(def = "not inverted") String inverted) {
 		ItemStack itemStack = wandItem.clone();
 		setLoreIndex(itemStack, 0, "inverted".equalsIgnoreCase(inverted) ? "inverted" : "not inverted");
 		setLoreIndex(itemStack, 1, material.toUpperCase());
@@ -223,7 +223,7 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 			} catch (Exception ignored) {
 			}
 
-			if (material == null || material == Material.AIR) {
+			if (material == null) {
 				event.getPlayer().sendMessage("§cPlease left-click to select another material first");
 				return;
 			}
