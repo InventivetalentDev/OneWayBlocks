@@ -53,8 +53,16 @@ public class OneWayBlock {
 	private       byte           data;
 	private       ArmorStand     entity;
 	private       ArmorStand     directionMarker;
+	private boolean inverted;
 
 	public boolean faceVisibleFrom(Vector3DDouble vector) {
+//		boolean result = faceVisibleFrom0(vector);
+//		if(inverted)return !result;
+//		return result;
+		return faceVisibleFrom0(vector);
+	}
+
+	public boolean faceVisibleFrom0(Vector3DDouble vector) {
 		Vector3DDouble check = location.add(direction.getModX() * .5, direction.getModY() * .5, direction.getModZ() * .5);
 		Vector3DDouble diff = check.subtract(vector);
 
@@ -100,6 +108,7 @@ public class OneWayBlock {
 		String[] materialSplit = split[2].split(":");
 		block.setMaterial(Material.valueOf(materialSplit[0]));
 		block.setData(Byte.parseByte(materialSplit[1]));
+		block.setInverted(name.contains("inverted"));
 		return block;
 	}
 

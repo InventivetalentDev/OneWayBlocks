@@ -122,7 +122,9 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 		Block bukkitBlock = block.getBlock(player.getWorld());
 
 		Location location = bukkitBlock.getLocation();
-		if (!block.faceVisibleFrom(playerVector) && block.getDirectionMarker().hasLineOfSight(player)) {
+		boolean visible=!block.faceVisibleFrom(playerVector) && block.getDirectionMarker().hasLineOfSight(player);
+		if(block.isInverted())visible=!visible;
+		if (visible) {
 			player.sendBlockChange(location, block.getMaterial(), block.getData());
 		} else {
 			player.sendBlockChange(location, bukkitBlock.getType(), bukkitBlock.getData());
@@ -231,7 +233,7 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 			killBlock(event.getPlayer(), event.getClickedBlock());
 
 			BlockFace face = event.getBlockFace();
-			if (inverted) { face = face.getOppositeFace(); }
+//			if (inverted) { face = face.getOppositeFace(); }
 			Location location = event.getClickedBlock().getLocation().add(.5, .5, .5);
 			ArmorStand blockMarker = location.getWorld().spawn(location, ArmorStand.class);
 			blockMarker.setMarker(true);
@@ -239,7 +241,7 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 			blockMarker.setGravity(false);
 			blockMarker.setSmall(true);
 			blockMarker.setBasePlate(false);
-			blockMarker.setCustomName("OneWayBlock-" + face.name() + "-" + material + ":" + data + "-"/* + (inverted ? "inverted" : "")*/);
+			blockMarker.setCustomName("OneWayBlock-" + face.name() + "-" + material + ":" + data + "-" + (inverted ? "inverted" : ""));
 
 			location = event.getClickedBlock().getRelative(face).getLocation().add(.5, .5, .5);
 			ArmorStand directionMarker = location.getWorld().spawn(location, ArmorStand.class);
