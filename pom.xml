@@ -7,7 +7,7 @@
 
     <groupId>org.inventivetalent</groupId>
     <artifactId>onewayblocks</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
+    <version>1.5.0-SNAPSHOT</version>
     <name>OneWayBlocks</name>
 
     <build>
@@ -55,7 +55,7 @@
                                     <include>org.inventivetalent:vectors**</include>
                                     <include>org.inventivetalent:boundingboxapi**</include>
                                     <include>org.inventivetalent:pluginannotations**</include>
-                                    <include>org.inventivetalent:itembuilder**</include>
+                                    <include>org.inventivetalent:item-builder**</include>
                                     <include>org.bstats:**</include>
                                 </includes>
                             </artifactSet>
@@ -108,11 +108,6 @@
             <groupId>org.inventivetalent</groupId>
             <artifactId>pluginannotations</artifactId>
             <version>1.4.7-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.inventivetalent</groupId>
-            <artifactId>itembuilder</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>

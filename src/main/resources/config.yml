@@ -6,9 +6,3 @@ radius:
 
 # Whether to allow interaction with the blocks (causes the texture to reset when players click a block)
 allowInteract: false
-
-# Wand Item
-item:
-  type: "NAME_TAG"
-  meta:
-    display: "&eOneWayBlock&6Wand"

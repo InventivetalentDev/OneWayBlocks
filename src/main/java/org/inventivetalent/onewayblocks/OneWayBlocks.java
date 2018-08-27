@@ -20,7 +20,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.inventivetalent.itembuilder.ItemBuilder;
 import org.inventivetalent.pluginannotations.PluginAnnotations;
 import org.inventivetalent.pluginannotations.command.Command;
 import org.inventivetalent.pluginannotations.command.OptionalArg;
@@ -49,7 +48,10 @@ public class OneWayBlocks extends JavaPlugin implements Listener {
 		PluginAnnotations.loadAll(this, this);
 		Bukkit.getPluginManager().registerEvents(this, this);
 
-		wandItem = new ItemBuilder(Material.NAME_TAG).fromConfig(getConfig().getConfigurationSection("item")).build();
+		wandItem = new ItemStack(Material.NAME_TAG);
+		ItemMeta wandMeta = wandItem.getItemMeta();
+		wandMeta.setDisplayName("§eOneWayBlock§6Wand");
+		wandItem.setItemMeta(wandMeta);
 
 		new Metrics(this);
 	}
